@@ -36,5 +36,5 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # Hyper parameters
 class Config:
     LEARNING_RATE = 1e-4
-    BATCH_SIZE = 4
+    BATCH_SIZE = 16
     NUM_EPOCHS = 1000
