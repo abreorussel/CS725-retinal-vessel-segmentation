@@ -79,3 +79,18 @@ class RandomFlip:
             'label': label,
         }
         return ret
+    
+
+class Resize:
+    def __call__(self , data):
+      img, label = data['img'], data['label']
+      transform = v2.Resize((256, 256)) 
+
+      img = transform(img)
+      label = transform(label)
+
+      ret = {
+            'img': img,
+            'label': label,
+        }
+      return ret

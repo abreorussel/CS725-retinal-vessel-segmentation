@@ -17,48 +17,30 @@ from albumentations.pytorch import ToTensorV2
 
 
 cfg = Config()
-# train_transform = transforms.Compose([
-#     GrayscaleNormalization(mean=0.5, std=0.5),
-#     RandomFlip(),
-#     ToTensor(),
-#     Resize()
-    
-# ])
-
-# train_transform = A.Compose(
-#     [
-#         A.Resize(512, 512),
-#         A.HorizontalFlip(p=0.5),
-#         A.VerticalFlip(p=0.5),
-#         A.Rotate(limit=30, p=0.5),
-#         A.Sharpen(alpha=(0.5, 0.9), lightness=(0.5, 1.0), p=0.3),
-#         A.Emboss(alpha=(0.1, 0.3), strength=(0.5, 1.0), p=0.3),
-
-#     ]
-# )
-
 train_transform = transforms.Compose([
-    # GrayscaleNormalization(mean=0.5, std=0.5),
+    GrayscaleNormalization(mean=0.5, std=0.5),
     RandomFlip(),
-    # RandomSharpen(alpha_range=(0.5, 0.9), lightness_range=(0.5, 1.0), p=0.3),  # Custom Sharpen
-    # RandomEmboss(alpha_range=(0.1, 0.3), strength_range=(0.5, 1.0), p=0.3),  # Custom Emboss
-    ToTensor(),  # Convert to tensor
+    ToTensor(),
     Resize()
+    
 ])
+
+# train_transform = transforms.Compose([
+#     # GrayscaleNormalization(mean=0.5, std=0.5),
+#     RandomFlip(),
+#     # RandomSharpen(alpha_range=(0.5, 0.9), lightness_range=(0.5, 1.0), p=0.3),  # Custom Sharpen
+#     # RandomEmboss(alpha_range=(0.1, 0.3), strength_range=(0.5, 1.0), p=0.3),  # Custom Emboss
+#     ToTensor(),  # Convert to tensor
+#     Resize()
+# ])
 
 
 val_transform = transforms.Compose([
-    # GrayscaleNormalization(mean=0.5, std=0.5),
+    GrayscaleNormalization(mean=0.5, std=0.5),
     ToTensor(),
     Resize()
 ])
 
-# val_transform = A.Compose(
-#     [
-#         A.Resize(512, 512),
-#         # ToTensor()
-#     ]
-# )
 
 # net = U_Transformer(1,1).to(device)
 net = TransUNet(img_dim=256,
