@@ -6,23 +6,73 @@ from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from torchvision import transforms
 
+from dataset import RandomSharpen , RandomEmboss , Dataset
 from dataset import *
 from model import UNet
+from U_Transformer import *
+from transunet import *
 from utils import *
 from config import *
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
 
 
 cfg = Config()
+# train_transform = transforms.Compose([
+#     GrayscaleNormalization(mean=0.5, std=0.5),
+#     RandomFlip(),
+#     ToTensor(),
+#     Resize()
+    
+# ])
+
+# train_transform = A.Compose(
+#     [
+#         A.Resize(512, 512),
+#         A.HorizontalFlip(p=0.5),
+#         A.VerticalFlip(p=0.5),
+#         A.Rotate(limit=30, p=0.5),
+#         A.Sharpen(alpha=(0.5, 0.9), lightness=(0.5, 1.0), p=0.3),
+#         A.Emboss(alpha=(0.1, 0.3), strength=(0.5, 1.0), p=0.3),
+
+#     ]
+# )
+
 train_transform = transforms.Compose([
-    GrayscaleNormalization(mean=0.5, std=0.5),
+    # GrayscaleNormalization(mean=0.5, std=0.5),
     RandomFlip(),
-    ToTensor(),
-])
-val_transform = transforms.Compose([
-    GrayscaleNormalization(mean=0.5, std=0.5),
-    ToTensor(),
+    # RandomSharpen(alpha_range=(0.5, 0.9), lightness_range=(0.5, 1.0), p=0.3),  # Custom Sharpen
+    # RandomEmboss(alpha_range=(0.1, 0.3), strength_range=(0.5, 1.0), p=0.3),  # Custom Emboss
+    ToTensor(),  # Convert to tensor
+    Resize()
 ])
 
+
+val_transform = transforms.Compose([
+    # GrayscaleNormalization(mean=0.5, std=0.5),
+    ToTensor(),
+    Resize()
+])
+
+# val_transform = A.Compose(
+#     [
+#         A.Resize(512, 512),
+#         # ToTensor()
+#     ]
+# )
+
+# net = U_Transformer(1,1).to(device)
+net = TransUNet(img_dim=256,
+                in_channels=1,
+                out_channels=128,
+                head_num=4,
+                mlp_dim=512,
+                block_num=8,
+                patch_dim=16,
+                class_num=1).to(device)
+
+
+print(f"train : {TRAIN_IMGS_DIR}")
 # Set Dataset
 train_dataset = Dataset(imgs_dir=TRAIN_IMGS_DIR, labels_dir=TRAIN_LABELS_DIR, transform=train_transform)
 train_loader = DataLoader(train_dataset, batch_size=cfg.BATCH_SIZE, shuffle=True, num_workers=0)
@@ -36,7 +86,7 @@ train_batch_num = int(np.ceil(train_data_num / cfg.BATCH_SIZE)) # np.ceil 반올
 val_batch_num = int(np.ceil(val_data_num / cfg.BATCH_SIZE))
 
 # Network
-net = UNet().to(device)
+# net = UNet().to(device)
 
 # Loss Function
 loss_fn = nn.BCEWithLogitsLoss().to(device)
@@ -128,8 +178,8 @@ for epoch in range(start_epoch+1, num_epochs+1):
     
     print_form = '[Epoch {:0>4d}] Training Avg Loss: {:.4f} | Validation Avg Loss: {:.4f}'
     print(print_form.format(epoch, train_loss_avg, val_loss_avg))
-    
-    save_net(ckpt_dir=CKPT_DIR, net=net, optim=optim, epoch=epoch)
+    if epoch % 50 == 0:
+      save_net(ckpt_dir=CKPT_DIR, net=net, optim=optim, epoch=epoch)
     
 train_writer.close()
 val_writer.close()

@@ -8,7 +8,7 @@ def mkdir(*paths):
             os.makedirs(path, exist_ok=True)
 
 ROOT_DIR = os.path.dirname(os.path.abspath('__file__'))
-DATA_DIR = os.path.join(ROOT_DIR, 'ISBI2012')
+DATA_DIR = os.path.join(ROOT_DIR, 'retinal-blood-vessels')
 CKPT_DIR = os.path.join(ROOT_DIR, 'checkpoints')
 LOG_DIR = os.path.join(ROOT_DIR, 'logs')
 TRAIN_LOG_DIR = os.path.join(LOG_DIR, 'train')
@@ -35,6 +35,6 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Hyper parameters
 class Config:
-    LEARNING_RATE = 1e-3
-    BATCH_SIZE = 2
-    NUM_EPOCHS = 100
+    LEARNING_RATE = 1e-4
+    BATCH_SIZE = 4
+    NUM_EPOCHS = 1000
