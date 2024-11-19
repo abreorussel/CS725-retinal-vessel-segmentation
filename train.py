@@ -74,6 +74,7 @@ loss_fn = nn.BCEWithLogitsLoss().to(device)
 
 # Optimizer
 optim = torch.optim.Adam(params=net.parameters(), lr=cfg.LEARNING_RATE)
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optim, 'min', patience=5, verbose=True)
 
 # Tensorboard
 train_writer = SummaryWriter(log_dir=TRAIN_LOG_DIR)
@@ -125,6 +126,7 @@ for epoch in range(start_epoch+1, num_epochs+1):
     train_loss_avg = np.mean(train_loss_arr)
     train_writer.add_scalar(tag='loss', scalar_value=train_loss_avg, global_step=epoch)
     
+    
     # Validation (No Back Propagation)
     with torch.no_grad():
         net.eval()  # Evaluation Mode
@@ -153,6 +155,8 @@ for epoch in range(start_epoch+1, num_epochs+1):
             val_writer.add_image(tag='img', img_tensor=img, global_step=global_step, dataformats='NHWC')
             val_writer.add_image(tag='label', img_tensor=label, global_step=global_step, dataformats='NHWC')
             val_writer.add_image(tag='output', img_tensor=output, global_step=global_step, dataformats='NHWC')
+
+    scheduler.step(np.sum(val_loss_arr))
             
     val_loss_avg = np.mean(val_loss_arr)
     val_writer.add_scalar(tag='loss', scalar_value=val_loss_avg, global_step=epoch)
