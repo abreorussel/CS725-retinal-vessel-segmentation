@@ -26,15 +26,6 @@ train_transform = transforms.Compose([
     
 ])
 
-# train_transform = transforms.Compose([
-#     # GrayscaleNormalization(mean=0.5, std=0.5),
-#     RandomFlip(),
-#     # RandomSharpen(alpha_range=(0.5, 0.9), lightness_range=(0.5, 1.0), p=0.3),  # Custom Sharpen
-#     # RandomEmboss(alpha_range=(0.1, 0.3), strength_range=(0.5, 1.0), p=0.3),  # Custom Emboss
-#     ToTensor(),  # Convert to tensor
-#     Resize()
-# ])
-
 
 val_transform = transforms.Compose([
     GrayscaleNormalization(mean=0.5, std=0.5),
@@ -64,18 +55,16 @@ val_loader = DataLoader(val_dataset, batch_size=cfg.BATCH_SIZE, shuffle=False, n
 train_data_num = len(train_dataset)
 val_data_num = len(val_dataset)
 
-train_batch_num = int(np.ceil(train_data_num / cfg.BATCH_SIZE)) # np.ceil 반올림
+train_batch_num = int(np.ceil(train_data_num / cfg.BATCH_SIZE)) 
 val_batch_num = int(np.ceil(val_data_num / cfg.BATCH_SIZE))
 
-# Network
-# net = UNet().to(device)
 
 # Loss Function
 loss_fn = nn.BCEWithLogitsLoss().to(device)
 
 # Optimizer
 optim = torch.optim.Adam(params=net.parameters(), lr=cfg.LEARNING_RATE)
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optim, 'min', patience=5, verbose=True)
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optim, 'min', patience=10, verbose=True)
 
 # Tensorboard
 train_writer = SummaryWriter(log_dir=TRAIN_LOG_DIR)
@@ -113,21 +102,6 @@ for epoch in range(start_epoch+1, num_epochs+1):
         loss.backward()
         
         optim.step()
-
-        # label = to_numpy(label)
-        # output = to_numpy(classify_class(output))
-
-        
-
-        # for j in range(label.shape[0]):
-        #     single_output = output[j].squeeze()
-        #     single_label = label[j].squeeze()
-
-        #     dice_coeff = dc(single_output , single_label)
-        #     hd95_value = hd95(single_output , single_label)
-
-        #     train_batch_dice_coeff.append(dice_coeff)
-        #     train_batch_hd95_values.append(hd95_value)
         
         # Calc Loss Function
         train_loss_arr.append(loss.item())
@@ -140,13 +114,13 @@ for epoch in range(start_epoch+1, num_epochs+1):
         output = to_numpy(classify_class(output))
 
         
-        # global_step = train_batch_num * (epoch-1) + batch_idx
-        # train_writer.add_image(tag='img', img_tensor=img, global_step=global_step, dataformats='NHWC')
-        # train_writer.add_image(tag='label', img_tensor=label, global_step=global_step, dataformats='NHWC')
-        # train_writer.add_image(tag='output', img_tensor=output, global_step=global_step, dataformats='NHWC')
+        global_step = train_batch_num * (epoch-1) + batch_idx
+        train_writer.add_image(tag='img', img_tensor=img, global_step=global_step, dataformats='NHWC')
+        train_writer.add_image(tag='label', img_tensor=label, global_step=global_step, dataformats='NHWC')
+        train_writer.add_image(tag='output', img_tensor=output, global_step=global_step, dataformats='NHWC')
         
     train_loss_avg = np.mean(train_loss_arr)
-    # train_writer.add_scalar(tag='loss', scalar_value=train_loss_avg, global_step=epoch)
+    train_writer.add_scalar(tag='loss', scalar_value=train_loss_avg, global_step=epoch)
     
     
     # Validation (No Back Propagation)
@@ -164,19 +138,6 @@ for epoch in range(start_epoch+1, num_epochs+1):
             # Calc Loss Function
             loss = loss_fn(output, label)
             val_loss_arr.append(loss.item())
-
-            # label = to_numpy(label)
-            # output = to_numpy(classify_class(output))
-
-            # for j in range(label.shape[0]):
-            #     single_output = output[j].squeeze()
-            #     single_label = label[j].squeeze()
-
-            #     dice_coeff = dc(single_output , single_label)
-            #     hd95_value = hd95(single_output , single_label)
-
-            #     val_batch_dice_coeff.append(dice_coeff)
-            #     val_batch_hd95_values.append(hd95_value)
             
             print_form = '[Validation] | Epoch: {:0>4d} / {:0>4d} | Batch: {:0>4d} / {:0>4d} | Loss: {:.4f}'
             print(print_form.format(epoch, num_epochs, batch_idx, val_batch_num, val_loss_arr[-1]))
@@ -186,15 +147,15 @@ for epoch in range(start_epoch+1, num_epochs+1):
             label = to_numpy(label)
             output = to_numpy(classify_class(output))
             
-            # global_step = val_batch_num * (epoch-1) + batch_idx
-            # val_writer.add_image(tag='img', img_tensor=img, global_step=global_step, dataformats='NHWC')
-            # val_writer.add_image(tag='label', img_tensor=label, global_step=global_step, dataformats='NHWC')
-            # val_writer.add_image(tag='output', img_tensor=output, global_step=global_step, dataformats='NHWC')
+            global_step = val_batch_num * (epoch-1) + batch_idx
+            val_writer.add_image(tag='img', img_tensor=img, global_step=global_step, dataformats='NHWC')
+            val_writer.add_image(tag='label', img_tensor=label, global_step=global_step, dataformats='NHWC')
+            val_writer.add_image(tag='output', img_tensor=output, global_step=global_step, dataformats='NHWC')
 
     scheduler.step(np.sum(val_loss_arr))
             
     val_loss_avg = np.mean(val_loss_arr)
-    # val_writer.add_scalar(tag='loss', scalar_value=val_loss_avg, global_step=epoch)
+    val_writer.add_scalar(tag='loss', scalar_value=val_loss_avg, global_step=epoch)
     
     print_form = '[Epoch {:0>4d}] Training Avg Loss: {:.4f} | Validation Avg Loss: {:.4f}'
     print(print_form.format(epoch, train_loss_avg, val_loss_avg))
