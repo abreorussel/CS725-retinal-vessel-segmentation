@@ -114,20 +114,20 @@ for epoch in range(start_epoch+1, num_epochs+1):
         
         optim.step()
 
-        label = to_numpy(label)
-        output = to_numpy(classify_class(output))
+        # label = to_numpy(label)
+        # output = to_numpy(classify_class(output))
 
         
 
-        for j in range(label.shape[0]):
-            single_output = output[j].squeeze()
-            single_label = label[j].squeeze()
+        # for j in range(label.shape[0]):
+        #     single_output = output[j].squeeze()
+        #     single_label = label[j].squeeze()
 
-            dice_coeff = dc(single_output , single_label)
-            hd95_value = hd95(single_output , single_label)
+        #     dice_coeff = dc(single_output , single_label)
+        #     hd95_value = hd95(single_output , single_label)
 
-            train_batch_dice_coeff.append(dice_coeff)
-            train_batch_hd95_values.append(hd95_value)
+        #     train_batch_dice_coeff.append(dice_coeff)
+        #     train_batch_hd95_values.append(hd95_value)
         
         # Calc Loss Function
         train_loss_arr.append(loss.item())
@@ -135,9 +135,9 @@ for epoch in range(start_epoch+1, num_epochs+1):
         print(print_form.format(epoch, num_epochs, batch_idx, train_batch_num, train_loss_arr[-1]))
         
         # Tensorboard
-        # img = to_numpy(denormalization(img, mean=0.5, std=0.5))
-        # label = to_numpy(label)
-        # output = to_numpy(classify_class(output))
+        img = to_numpy(denormalization(img, mean=0.5, std=0.5))
+        label = to_numpy(label)
+        output = to_numpy(classify_class(output))
 
         
         # global_step = train_batch_num * (epoch-1) + batch_idx
@@ -165,26 +165,26 @@ for epoch in range(start_epoch+1, num_epochs+1):
             loss = loss_fn(output, label)
             val_loss_arr.append(loss.item())
 
-            label = to_numpy(label)
-            output = to_numpy(classify_class(output))
+            # label = to_numpy(label)
+            # output = to_numpy(classify_class(output))
 
-            for j in range(label.shape[0]):
-                single_output = output[j].squeeze()
-                single_label = label[j].squeeze()
+            # for j in range(label.shape[0]):
+            #     single_output = output[j].squeeze()
+            #     single_label = label[j].squeeze()
 
-                dice_coeff = dc(single_output , single_label)
-                hd95_value = hd95(single_output , single_label)
+            #     dice_coeff = dc(single_output , single_label)
+            #     hd95_value = hd95(single_output , single_label)
 
-                val_batch_dice_coeff.append(dice_coeff)
-                val_batch_hd95_values.append(hd95_value)
+            #     val_batch_dice_coeff.append(dice_coeff)
+            #     val_batch_hd95_values.append(hd95_value)
             
             print_form = '[Validation] | Epoch: {:0>4d} / {:0>4d} | Batch: {:0>4d} / {:0>4d} | Loss: {:.4f}'
             print(print_form.format(epoch, num_epochs, batch_idx, val_batch_num, val_loss_arr[-1]))
             
             # Tensorboard
-            # img = to_numpy(denormalization(img, mean=0.5, std=0.5))
-            # label = to_numpy(label)
-            # output = to_numpy(classify_class(output))
+            img = to_numpy(denormalization(img, mean=0.5, std=0.5))
+            label = to_numpy(label)
+            output = to_numpy(classify_class(output))
             
             # global_step = val_batch_num * (epoch-1) + batch_idx
             # val_writer.add_image(tag='img', img_tensor=img, global_step=global_step, dataformats='NHWC')
@@ -196,8 +196,8 @@ for epoch in range(start_epoch+1, num_epochs+1):
     val_loss_avg = np.mean(val_loss_arr)
     # val_writer.add_scalar(tag='loss', scalar_value=val_loss_avg, global_step=epoch)
     
-    print_form = '[Epoch {:0>4d}] Training Avg Loss: {:.4f} | Training Avg Dice : {:.4f} | Validation Avg Loss: {:.4f} | Validation Avg Dice : {:.4f}'
-    print(print_form.format(epoch, train_loss_avg, np.mean(train_batch_dice_coeff), val_loss_avg, np.mean(val_batch_dice_coeff)))
+    print_form = '[Epoch {:0>4d}] Training Avg Loss: {:.4f} | Validation Avg Loss: {:.4f}'
+    print(print_form.format(epoch, train_loss_avg, val_loss_avg))
     if epoch % 50 == 0:
       save_net(ckpt_dir=CKPT_DIR, net=net, optim=optim, epoch=epoch)
     
