@@ -114,6 +114,9 @@ for epoch in range(start_epoch+1, num_epochs+1):
         
         optim.step()
 
+        label = to_numpy(label)
+        output = to_numpy(classify_class(output))
+
         
 
         for j in range(label.shape[0]):
@@ -132,9 +135,9 @@ for epoch in range(start_epoch+1, num_epochs+1):
         print(print_form.format(epoch, num_epochs, batch_idx, train_batch_num, train_loss_arr[-1]))
         
         # Tensorboard
-        img = to_numpy(denormalization(img, mean=0.5, std=0.5))
-        label = to_numpy(label)
-        output = to_numpy(classify_class(output))
+        # img = to_numpy(denormalization(img, mean=0.5, std=0.5))
+        # label = to_numpy(label)
+        # output = to_numpy(classify_class(output))
 
         
         # global_step = train_batch_num * (epoch-1) + batch_idx
@@ -162,6 +165,9 @@ for epoch in range(start_epoch+1, num_epochs+1):
             loss = loss_fn(output, label)
             val_loss_arr.append(loss.item())
 
+            label = to_numpy(label)
+            output = to_numpy(classify_class(output))
+
             for j in range(label.shape[0]):
                 single_output = output[j].squeeze()
                 single_label = label[j].squeeze()
@@ -176,9 +182,9 @@ for epoch in range(start_epoch+1, num_epochs+1):
             print(print_form.format(epoch, num_epochs, batch_idx, val_batch_num, val_loss_arr[-1]))
             
             # Tensorboard
-            img = to_numpy(denormalization(img, mean=0.5, std=0.5))
-            label = to_numpy(label)
-            output = to_numpy(classify_class(output))
+            # img = to_numpy(denormalization(img, mean=0.5, std=0.5))
+            # label = to_numpy(label)
+            # output = to_numpy(classify_class(output))
             
             # global_step = val_batch_num * (epoch-1) + batch_idx
             # val_writer.add_image(tag='img', img_tensor=img, global_step=global_step, dataformats='NHWC')
