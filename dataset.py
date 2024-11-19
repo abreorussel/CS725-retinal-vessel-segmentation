@@ -5,7 +5,7 @@ import numpy as np
 import torch
 
 
-__all__ = ['Dataset', 'ToTensor', 'GrayscaleNormalization', 'RandomFlip']
+__all__ = ['Dataset', 'ToTensor', 'GrayscaleNormalization', 'RandomFlip' , 'Resize']
 
 
 class Dataset(torch.utils.data.Dataset):
