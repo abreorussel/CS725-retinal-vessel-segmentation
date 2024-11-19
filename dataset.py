@@ -3,6 +3,7 @@ import glob
 import cv2
 import numpy as np
 import torch
+from torchvision.transforms import v2
 
 
 __all__ = ['Dataset', 'ToTensor', 'GrayscaleNormalization', 'RandomFlip' , 'Resize']
