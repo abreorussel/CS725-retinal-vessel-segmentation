@@ -13,6 +13,31 @@ from scipy.ndimage import (
     label,
 )
 
+import torch
+
+def dice_coef(y_pred, y_true, smooth=1.0):
+    """
+    Dice Coefficient for binary segmentation.
+
+    Args:
+        y_pred: Predicted tensor (B, H, W) or (B, 1, H, W).
+        y_true: Ground truth tensor (B, H, W) or (B, 1, H, W).
+        smooth: Smoothing factor to avoid division by zero.
+
+    Returns:
+        Dice coefficient as a scalar tensor.
+    """
+    # Flatten the tensors
+    y_true_f = y_true.view(-1)
+    y_pred_f = y_pred.view(-1)
+    
+    # Compute intersection
+    intersection = torch.sum(y_true_f * y_pred_f)
+    
+    # Compute Dice coefficient
+    dice = (2.0 * intersection + smooth) / (torch.sum(y_true_f) + torch.sum(y_pred_f) + smooth)
+    return dice
+
 
 
 def __surface_distances(result, reference, voxelspacing=None, connectivity=1):
@@ -113,9 +138,6 @@ def dc(result, reference):
 
     return dc
 
-def dice_coef_loss(y_pred, y_true ):
-    return -dc(y_pred, y_true )
-
 
 class DiceCoefLoss(nn.Module):
     def __init__(self):
@@ -131,7 +153,7 @@ class DiceCoefLoss(nn.Module):
         # intersection = (pred * target).sum(dim=(2, 3))
         # union = pred.sum(dim=(2, 3)) + target.sum(dim=(2, 3))
         # dice_loss = 1 - (2. * intersection + 1e-6) / (union + 1e-6)
-        dice_coeff = dc(pred , target)
+        dice_coeff = dice_coef(pred , target)
         
         # BCE loss
         # bce_loss = self.bce_loss(pred, target)
