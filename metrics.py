@@ -116,6 +116,30 @@ def dice_coef_loss(y_pred, y_true ):
     return -dc(y_pred, y_true )
 
 
+class DiceCoefLoss(nn.Module):
+    def __init__(self):
+        super(DiceCoefLoss, self).__init__()
+        # self.weight_dice = weight_dice
+        # self.weight_bce = weight_bce
+        # self.bce_loss = nn.BCEWithLogitsLoss()  # Binary Cross Entropy
+
+
+    def forward(self, pred, target):
+        # Dice loss
+        # pred = torch.sigmoid(pred)
+        # intersection = (pred * target).sum(dim=(2, 3))
+        # union = pred.sum(dim=(2, 3)) + target.sum(dim=(2, 3))
+        # dice_loss = 1 - (2. * intersection + 1e-6) / (union + 1e-6)
+        dice_coeff = dc(pred , target)
+        
+        # BCE loss
+        # bce_loss = self.bce_loss(pred, target)
+        
+        # Weighted combination
+        # return self.weight_dice * dice_loss.mean() + self.weight_bce * bce_loss
+        return 1 - dice_coeff
+
+
 
 def hd95(result, reference, voxelspacing=None, connectivity=1):
     """
