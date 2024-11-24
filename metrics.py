@@ -15,28 +15,37 @@ from scipy.ndimage import (
 
 import torch
 
-def dice_coef(y_pred, y_true, smooth=1.0):
-    """
-    Dice Coefficient for binary segmentation.
+import torch
 
-    Args:
-        y_pred: Predicted tensor (B, H, W) or (B, 1, H, W).
-        y_true: Ground truth tensor (B, H, W) or (B, 1, H, W).
-        smooth: Smoothing factor to avoid division by zero.
+def dice_loss(pred, target, smooth=1e-6):
+    pred = torch.sigmoid(pred)  # Apply sigmoid for binary segmentation
+    intersection = (pred * target).sum(dim=(2, 3))  # Sum over spatial dimensions
+    union = pred.sum(dim=(2, 3)) + target.sum(dim=(2, 3))
+    dice = (2. * intersection + smooth) / (union + smooth)
+    return 1 - dice.mean()
 
-    Returns:
-        Dice coefficient as a scalar tensor.
-    """
-    # Flatten the tensors
-    y_true_f = y_true.view(-1)
-    y_pred_f = y_pred.view(-1)
-    
-    # Compute intersection
-    intersection = torch.sum(y_true_f * y_pred_f)
-    
-    # Compute Dice coefficient
-    dice = (2.0 * intersection + smooth) / (torch.sum(y_true_f) + torch.sum(y_pred_f) + smooth)
-    return dice
+
+
+
+class CombinedLoss(nn.Module):
+    def __init__(self, weight_dice=0.5, weight_bce=0.5):
+        super(CombinedLoss, self).__init__()
+        self.weight_dice = weight_dice
+        self.weight_bce = weight_bce
+        self.bce_loss = nn.BCEWithLogitsLoss()  # Binary Cross Entropy
+
+    def forward(self, pred, target):
+        # Dice loss
+        pred = torch.sigmoid(pred)
+        intersection = (pred * target).sum(dim=(2, 3))
+        union = pred.sum(dim=(2, 3)) + target.sum(dim=(2, 3))
+        dice_loss = 1 - (2. * intersection + 1e-6) / (union + 1e-6)
+        
+        # BCE loss
+        bce_loss = self.bce_loss(pred, target)
+        
+        # Weighted combination
+        return self.weight_dice * dice_loss.mean() + self.weight_bce * bce_loss
 
 
 
