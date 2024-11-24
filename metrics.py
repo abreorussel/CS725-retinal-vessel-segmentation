@@ -112,6 +112,11 @@ def dc(result, reference):
 
     return dc
 
+def dice_coef_loss(y_pred, y_true ):
+    return -dc(y_pred, y_true )
+
+
+
 def hd95(result, reference, voxelspacing=None, connectivity=1):
     """
     95th percentile of the Hausdorff Distance.
