@@ -160,7 +160,7 @@ class DiceCoefLoss(nn.Module):
         
         # Weighted combination
         # return self.weight_dice * dice_loss.mean() + self.weight_bce * bce_loss
-        return 1 - dice_coeff
+        return -dice_coeff
 
 
 
