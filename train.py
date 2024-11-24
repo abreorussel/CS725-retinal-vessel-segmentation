@@ -61,7 +61,7 @@ val_batch_num = int(np.ceil(val_data_num / cfg.BATCH_SIZE))
 
 # Loss Function
 # loss_fn = nn.BCEWithLogitsLoss().to(device)
-loss_fn = CombinedLoss(weight_dice=0.7, weight_bce=0.3).to(device)
+loss_fn = CombinedLoss(weight_dice=1, weight_bce=0).to(device)
 
 # Optimizer
 optim = torch.optim.Adam(params=net.parameters(), lr=cfg.LEARNING_RATE)
