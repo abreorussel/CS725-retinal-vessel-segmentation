@@ -3,6 +3,7 @@
 import cv2
 import numpy as np
 import numpy
+import torch.nn as nn
 from scipy.ndimage import (
     _ni_support,
     binary_erosion,
