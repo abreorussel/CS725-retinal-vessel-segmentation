@@ -4,10 +4,7 @@ import torch.nn.functional as F
 import torch.utils.checkpoint as checkpoint
 import numpy as np
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
-# from utils.checkpoint import load_checkpoint
-# from mmseg.utils import get_root_logger
-from utils.loggers import get_logger
-from models.attn import Attention, PreNorm, FeedForward, CrossAttention
+from attn import Attention, PreNorm, FeedForward, CrossAttention
 
 
 groups = 32
