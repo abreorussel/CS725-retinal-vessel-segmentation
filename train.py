@@ -7,13 +7,12 @@ from torch.utils.tensorboard import SummaryWriter
 from torchvision import transforms
 
 from dataset import *
-from model import UNet
 from U_Transformer import *
 from transunet import *
 from utils import *
 from metrics import *
 from config import *
-from models.DS_TransUNet import *
+from models.DS_TransUNet import UNet
 # from attention_unet import *
 import matplotlib.pyplot as plt 
 import albumentations as A
