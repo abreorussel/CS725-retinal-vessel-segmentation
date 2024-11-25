@@ -13,7 +13,7 @@ from transunet import *
 from utils import *
 from metrics import *
 from config import *
-from attention_unet import *
+# from attention_unet import *
 import matplotlib.pyplot as plt 
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
