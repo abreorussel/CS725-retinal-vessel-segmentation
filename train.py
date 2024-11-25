@@ -37,15 +37,15 @@ val_transform = transforms.Compose([
 
 
 # net = U_Transformer(1,1).to(device)
-# net = TransUNet(img_dim=256,
-#                 in_channels=1,
-#                 out_channels=128,
-#                 head_num=4,
-#                 mlp_dim=512,
-#                 block_num=8,
-#                 patch_dim=16,
-#                 class_num=1).to(device)
-net = UNet(256, 1 , 1).to(device)
+net = TransUNet(img_dim=256,
+                in_channels=1,
+                out_channels=128,
+                head_num=4,
+                mlp_dim=512,
+                block_num=8,
+                patch_dim=16,
+                class_num=1).to(device)
+# net = UNet(256, 1 , 1).to(device)
 
 
 print(f"train : {TRAIN_IMGS_DIR}")
@@ -64,11 +64,11 @@ val_batch_num = int(np.ceil(val_data_num / cfg.BATCH_SIZE))
 
 # Loss Function
 # loss_fn = nn.BCEWithLogitsLoss().to(device)
-loss_fn = CombinedLoss(weight_dice=0.5, weight_bce=0.5).to(device)
+loss_fn = CombinedLoss(weight_dice=0.7, weight_bce=0.3).to(device)
 
 # Optimizer
 optim = torch.optim.Adam(params=net.parameters(), lr=cfg.LEARNING_RATE)
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optim, 'min', patience=10, verbose=True)
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optim, 'min', patience=5, verbose=True)
 
 # Tensorboard
 train_writer = SummaryWriter(log_dir=TRAIN_LOG_DIR)
