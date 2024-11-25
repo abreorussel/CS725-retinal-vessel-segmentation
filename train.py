@@ -13,6 +13,7 @@ from transunet import *
 from utils import *
 from metrics import *
 from config import *
+from models.DS_TransUNet import *
 # from attention_unet import *
 import matplotlib.pyplot as plt 
 import albumentations as A
@@ -37,14 +38,15 @@ val_transform = transforms.Compose([
 
 
 # net = U_Transformer(1,1).to(device)
-net = TransUNet(img_dim=256,
-                in_channels=1,
-                out_channels=128,
-                head_num=4,
-                mlp_dim=512,
-                block_num=8,
-                patch_dim=16,
-                class_num=1).to(device)
+# net = TransUNet(img_dim=256,
+#                 in_channels=1,
+#                 out_channels=128,
+#                 head_num=4,
+#                 mlp_dim=512,
+#                 block_num=8,
+#                 patch_dim=16,
+#                 class_num=1).to(device)
+net = UNet(256, 1 , 1).to(device)
 
 
 print(f"train : {TRAIN_IMGS_DIR}")
