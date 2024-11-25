@@ -13,6 +13,8 @@ from transunet import *
 from utils import *
 from metrics import *
 from config import *
+from attention_unet import *
+import matplotlib.pyplot as plt 
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
@@ -80,6 +82,10 @@ else:
     print('* Training from scratch')
 
 num_epochs = cfg.NUM_EPOCHS
+
+train_loss_epoch_arr = list()
+val_loss_epoch_arr = list()
+
 for epoch in range(start_epoch+1, num_epochs+1):
     net.train()  # Train Mode
     train_loss_arr = list()
@@ -121,6 +127,7 @@ for epoch in range(start_epoch+1, num_epochs+1):
         train_writer.add_image(tag='output', img_tensor=output, global_step=global_step, dataformats='NHWC')
         
     train_loss_avg = np.mean(train_loss_arr)
+    train_loss_epoch_arr.append(train_loss_avg)
     train_writer.add_scalar(tag='loss', scalar_value=train_loss_avg, global_step=epoch)
     
     
@@ -156,12 +163,47 @@ for epoch in range(start_epoch+1, num_epochs+1):
     scheduler.step(np.sum(val_loss_arr))
             
     val_loss_avg = np.mean(val_loss_arr)
+    val_loss_epoch_arr.append(val_loss_avg)
     val_writer.add_scalar(tag='loss', scalar_value=val_loss_avg, global_step=epoch)
     
     print_form = '[Epoch {:0>4d}] Training Avg Loss: {:.4f} | Validation Avg Loss: {:.4f}'
     print(print_form.format(epoch, train_loss_avg, val_loss_avg))
     if epoch % 50 == 0:
       save_net(ckpt_dir=CKPT_DIR, net=net, optim=optim, epoch=epoch)
+
+
+# Print the Loss Graph
+
+import matplotlib.pyplot as plt
+
+# Example lists of training and validation loss
+
+epochs = range(1, len(train_loss_epoch_arr) + 1)  # Epochs (1, 2, 3, ...)
+
+# Plot the training and validation loss
+plt.figure(figsize=(8, 6))
+plt.plot(epochs, train_loss_epoch_arr, label='Training Loss', marker='o' , color="red")
+plt.plot(epochs, val_loss_epoch_arr, label='Validation Loss', marker='o' , color="yellow")
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Training and Validation Loss')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+
+# Plot the Dice Coeff
+# plt.figure(figsize=(8, 6))
+# plt.plot(epochs, train_loss_epoch_arr, label='Training Loss', marker='o' , color="red")
+# plt.xlabel('Epochs')
+# plt.ylabel('DICE Coeff')
+# plt.title('Dice Similarity Corfficient')
+# plt.legend()
+# plt.grid(True)
+# plt.tight_layout()
+# plt.show()
+
     
 train_writer.close()
 val_writer.close()
