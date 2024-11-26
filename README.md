@@ -61,6 +61,19 @@ Then, you can see result images from `./test_results`
 
 <br><br>
 
+### Experiments
+![Readme1](https://github.com/user-attachments/assets/67dbd3ea-fcd4-46fb-a8d3-0b7a9608634a)
+Result table with #Param and #FLOPs
+
+<br><br>
+
+### Results
+
+![image](https://github.com/user-attachments/assets/bbd6b28c-9bac-42c7-956d-2805e66382fb)
+Result table with GPU Consumption and AVG Time
+
+<br><br>
+
 ## Credits
 
 This project builds upon the work of others:
