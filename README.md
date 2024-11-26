@@ -24,7 +24,7 @@ Retina Blood Vessel <https://www.kaggle.com/datasets/abdallahwagih/retina-blood-
 ## Data Preprocessing
 
 - Download Retina Blood Vessel data from <https://www.kaggle.com/datasets/abdallahwagih/retina-blood-vessel> 
-- Save data like below.  
+- Save the data as the given directory structure below . The code to split the data is present in the notebook. 
 
 ```
 # ROOT Directory
@@ -39,8 +39,7 @@ retinal-blood-vessels/
     ├── test/
     └── val/
 
-
-- Split Data to train, val, test with [data_prep.ipynb](./data_prep.ipynb)
+```
 
 <br>
 
@@ -61,10 +60,6 @@ $ python eval.py
 Then, you can see result images from `./test_results`  
 
 <br><br>
-
-## Reference
-
-- [hanyoseob - youtube-cnn-002-pytorch-unet](https://github.com/hanyoseob/youtube-cnn-002-pytorch-unet)
 
 ## Credits
 
