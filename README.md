@@ -62,15 +62,15 @@ Then, you can see result images from `./test_results`
 <br><br>
 
 ### Experiments
-![Readme1](https://github.com/user-attachments/assets/67dbd3ea-fcd4-46fb-a8d3-0b7a9608634a)
-Result table with #Param and #FLOPs
+![Readme1](https://github.com/abreorussel/CS725-retinal-vessel-segmentation/blob/main/assets/experiments.png)
+Experiments table with best performance metrics highlighted in blue.
 
 <br><br>
 
 ### Results
 
-![image](https://github.com/user-attachments/assets/bbd6b28c-9bac-42c7-956d-2805e66382fb)
-Result table with GPU Consumption and AVG Time
+![image](https://github.com/abreorussel/CS725-retinal-vessel-segmentation/blob/main/assets/results.png)
+
 
 <br><br>
 
