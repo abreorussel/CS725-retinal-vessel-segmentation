@@ -15,6 +15,7 @@ Retina Blood Vessel <https://www.kaggle.com/datasets/abdallahwagih/retina-blood-
 ### ViT based networks used :
 
 **TransUNet: Transformers Make Strong Encoders for Medical Image Segmentation** \<[arxiv link](https://arxiv.org/abs/2102.04306)\>
+<br>
 **UNETR: Transformers for 3D Medical Image Segmentation** \<[arxiv link](https://arxiv.org/abs/2103.10504)\>
 
 
