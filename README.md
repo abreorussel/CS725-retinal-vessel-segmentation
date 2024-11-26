@@ -95,4 +95,4 @@ This project builds upon the work of others:
 
     
 - **Code Repository**:  
-  Referred TransUNet network from [mkara44](https://github.com/mkara44/transunet_pytorch) and UNET-R from [HXLH50K](https://github.com/HXLH50K/U-Net-Transformer) on GitHub. 
+  Referred TransUNet network from [mkara44](https://github.com/mkara44/transunet_pytorch) and UNET-R from [HXLH50K](https://github.com/HXLH50K/U-Net-Transformer) on GitHub. Referred techniques of augmentation from [devbruce](https://github.com/devbruce/Segmentation-UNet-PyTorch) and segmentation metrics from [loli](https://github.com/loli/medpy/blob/master/medpy/metric/binary.py)

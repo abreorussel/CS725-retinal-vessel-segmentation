@@ -1,5 +1,5 @@
 # Metrics
-
+import torch
 import cv2
 import numpy as np
 import numpy
@@ -13,9 +13,7 @@ from scipy.ndimage import (
     label,
 )
 
-import torch
 
-import torch
 
 def dice_loss(pred, target, smooth=1e-6):
     pred = torch.sigmoid(pred)  # Apply sigmoid for binary segmentation
@@ -23,7 +21,6 @@ def dice_loss(pred, target, smooth=1e-6):
     union = pred.sum(dim=(2, 3)) + target.sum(dim=(2, 3))
     dice = (2. * intersection + smooth) / (union + smooth)
     return 1 - dice.mean()
-
 
 
 

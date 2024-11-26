@@ -12,11 +12,7 @@ from transunet import *
 from utils import *
 from metrics import *
 from config import *
-from DS_TransUNet import UNet
-# from attention_unet import *
 import matplotlib.pyplot as plt 
-import albumentations as A
-from albumentations.pytorch import ToTensorV2
 
 
 cfg = Config()
@@ -45,7 +41,6 @@ net = TransUNet(img_dim=256,
                 block_num=8,
                 patch_dim=16,
                 class_num=1).to(device)
-# net = UNet(256, 1 , 1).to(device)
 
 
 print(f"train : {TRAIN_IMGS_DIR}")
@@ -70,9 +65,6 @@ loss_fn = CombinedLoss(weight_dice=0.7, weight_bce=0.3).to(device)
 optim = torch.optim.Adam(params=net.parameters(), lr=cfg.LEARNING_RATE)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optim, 'min', patience=5, verbose=True)
 
-# Tensorboard
-train_writer = SummaryWriter(log_dir=TRAIN_LOG_DIR)
-val_writer = SummaryWriter(log_dir=VAL_LOG_DIR)
 
 # Training
 start_epoch = 0
@@ -122,14 +114,8 @@ for epoch in range(start_epoch+1, num_epochs+1):
         output = to_numpy(classify_class(output))
 
         
-        global_step = train_batch_num * (epoch-1) + batch_idx
-        train_writer.add_image(tag='img', img_tensor=img, global_step=global_step, dataformats='NHWC')
-        train_writer.add_image(tag='label', img_tensor=label, global_step=global_step, dataformats='NHWC')
-        train_writer.add_image(tag='output', img_tensor=output, global_step=global_step, dataformats='NHWC')
-        
     train_loss_avg = np.mean(train_loss_arr)
     train_loss_epoch_arr.append(train_loss_avg)
-    train_writer.add_scalar(tag='loss', scalar_value=train_loss_avg, global_step=epoch)
     
     
     # Validation (No Back Propagation)
@@ -155,17 +141,12 @@ for epoch in range(start_epoch+1, num_epochs+1):
             img = to_numpy(denormalization(img, mean=0.5, std=0.5))
             label = to_numpy(label)
             output = to_numpy(classify_class(output))
-            
-            global_step = val_batch_num * (epoch-1) + batch_idx
-            val_writer.add_image(tag='img', img_tensor=img, global_step=global_step, dataformats='NHWC')
-            val_writer.add_image(tag='label', img_tensor=label, global_step=global_step, dataformats='NHWC')
-            val_writer.add_image(tag='output', img_tensor=output, global_step=global_step, dataformats='NHWC')
+        
 
     scheduler.step(np.sum(val_loss_arr))
             
     val_loss_avg = np.mean(val_loss_arr)
     val_loss_epoch_arr.append(val_loss_avg)
-    val_writer.add_scalar(tag='loss', scalar_value=val_loss_avg, global_step=epoch)
     
     print_form = '[Epoch {:0>4d}] Training Avg Loss: {:.4f} | Validation Avg Loss: {:.4f}'
     print(print_form.format(epoch, train_loss_avg, val_loss_avg))
@@ -192,19 +173,3 @@ plt.legend()
 plt.grid(True)
 plt.tight_layout()
 plt.show()
-
-
-# Plot the Dice Coeff
-# plt.figure(figsize=(8, 6))
-# plt.plot(epochs, train_loss_epoch_arr, label='Training Loss', marker='o' , color="red")
-# plt.xlabel('Epochs')
-# plt.ylabel('DICE Coeff')
-# plt.title('Dice Similarity Corfficient')
-# plt.legend()
-# plt.grid(True)
-# plt.tight_layout()
-# plt.show()
-
-    
-train_writer.close()
-val_writer.close()
