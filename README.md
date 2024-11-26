@@ -24,7 +24,7 @@ Retina Blood Vessel <https://www.kaggle.com/datasets/abdallahwagih/retina-blood-
 ## Data Preprocessing
 
 - Download Retina Blood Vessel data from <https://www.kaggle.com/datasets/abdallahwagih/retina-blood-vessel> 
-- Save the data as the given directory structure below . The code to split the data is present in the notebook. 
+- Save the data as the given directory structure below . The code to split the data is present in notebooks/cs725_retinal_vessel_segmentation.ipynb . To download the data from kaggle on google colab , one would require the kaggle.json api.
 
 ```
 # ROOT Directory
@@ -109,3 +109,6 @@ This project builds upon the work of others:
     
 - **Code Repository**:  
   Referred TransUNet network from [mkara44](https://github.com/mkara44/transunet_pytorch) and UNET-R from [HXLH50K](https://github.com/HXLH50K/U-Net-Transformer) on GitHub. Referred techniques of augmentation from [devbruce](https://github.com/devbruce/Segmentation-UNet-PyTorch) and segmentation metrics from [loli](https://github.com/loli/medpy/blob/master/medpy/metric/binary.py)
+
+- **NOTE**:
+  The experiments were performed in google colab and the respective code to run the entire pipeline is present in notebooks/cs725_retinal_vessel_segmentation.ipynb .
