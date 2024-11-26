@@ -1,5 +1,7 @@
 # Retinal Vessel Segmentation using ViT based Architectures
 
+Russel Abreo, Atharv Shingewar, Anand Patel, Saikiran Kasturi 
+
 <br>
 
 ## Basic Info
